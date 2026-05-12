@@ -4,7 +4,7 @@ import path from 'path';
 const LOG_DIR  = path.join(process.cwd(), 'data', 'logs');
 const LOG_PATH = path.join(LOG_DIR, 'book_4.jsonl');
 
-type Action = 'draft_generated' | 'word_swap' | 'regenerate' | 'approve';
+type Action = 'draft_generated' | 'word_swap' | 'regenerate' | 'approve' | 'publish';
 
 export function log(entry: {
   couplet_id: string;

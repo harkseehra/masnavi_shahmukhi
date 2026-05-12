@@ -42,6 +42,8 @@ export default function AdminPage() {
   const [regenerating, setRegen]  = useState<Set<string>>(new Set());
   const [romanInput, setRoman]    = useState<Record<string, string>>({});
   const [popover, setPopover]     = useState<WordPopover | null>(null);
+  const [publishing, setPublish]  = useState(false);
+  const [publishedCount, setPub]  = useState<number | null>(null);
   const popoverRef                = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async (off: number, size: BatchSize) => {
@@ -169,6 +171,19 @@ export default function AdminPage() {
 
   const onFont      = (f: AdminFont) => { setFont(f); applyFont(f); };
   const allApproved = couplets.length > 0 && couplets.every(c => c.status === 'approved');
+
+  const onPublish = async () => {
+    if (!allApproved || publishing) return;
+    setPublish(true);
+    setPub(null);
+    try {
+      const res  = await fetch('/api/admin/publish', { method: 'POST' });
+      const data = await res.json();
+      setPub(data.published);
+    } finally {
+      setPublish(false);
+    }
+  };
   const from        = offset + 1;
   const to          = Math.min(offset + batchSize, total);
 
@@ -289,8 +304,8 @@ export default function AdminPage() {
         <button id="pager-next" onClick={next} disabled={offset + batchSize >= total}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
-        <button disabled={!allApproved}
-          onClick={() => alert('Phase 4: Approve batch & push to reader')}
+        <button disabled={!allApproved || publishing}
+          onClick={onPublish}
           style={{
             marginLeft: 'auto', padding: '10px 20px', borderRadius: 10,
             background: allApproved ? 'var(--c-accent)' : 'var(--c-card-border)',
@@ -299,7 +314,7 @@ export default function AdminPage() {
             opacity: allApproved ? 1 : 0.4, cursor: allApproved ? 'pointer' : 'default',
           }}
         >
-          Approve Batch & Push to Reader
+          {publishing ? 'Publishing…' : publishedCount !== null ? `✓ ${publishedCount} published` : 'Approve Batch & Push to Reader'}
         </button>
       </div>
     </div>
