@@ -47,7 +47,7 @@ export default function Reader() {
   const slice = couplets.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
 
   useEffect(() => {
-    fetch('/book_4.json')
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/book_4.json`)
       .then(r => r.json())
       .then((data: Couplet[]) => {
         const approved = data.filter(c => c.status === 'approved');

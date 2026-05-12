@@ -7,7 +7,10 @@ const nextConfig: NextConfig = {
     output: 'export',
     basePath: '/masnavi_shahmukhi',
     images: { unoptimized: true },
-  } : {}),
+    env: { NEXT_PUBLIC_BASE_PATH: '/masnavi_shahmukhi' },
+  } : {
+    env: { NEXT_PUBLIC_BASE_PATH: '' },
+  }),
 };
 
 export default nextConfig;
