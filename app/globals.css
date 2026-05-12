@@ -201,18 +201,18 @@
 
 
 /* ── Language display toggle ─────────────────────────────────── */
-[data-lang-display="farsi"]   .verse-en       { display: none; }
-[data-lang-display="english"] .verse-fa       { display: none; }
-[data-lang-display="farsi"]   .scholar-cell--en { display: none; }
-[data-lang-display="english"] .scholar-cell--fa { display: none; }
+[data-lang-display="farsi"]   .verse-pa          { display: none; }
+[data-lang-display="punjabi"] .verse-fa-wrap      { display: none; }
+[data-lang-display="farsi"]   .scholar-cell--shahmukhi { display: none; }
+[data-lang-display="punjabi"] .scholar-cell--fa   { display: none; }
 
 /* ── Dark mode — phosphorus moonlight glow ───────────────────── */
 [data-theme="dark"] .verse-fa,
 [data-theme="dark"] .scholar-cell--fa {
   text-shadow: 0 0 14px rgba(78, 205, 196, 0.40), 0 0 36px rgba(78, 205, 196, 0.14);
 }
-[data-theme="dark"] .verse-en,
-[data-theme="dark"] .scholar-cell--en {
+[data-theme="dark"] .verse-pa,
+[data-theme="dark"] .scholar-cell--shahmukhi {
   text-shadow: 0 0 14px rgba(126, 176, 232, 0.35), 0 0 36px rgba(126, 176, 232, 0.12);
 }
 [data-theme="dark"][data-fa-color="irozumi"] .verse-fa,
