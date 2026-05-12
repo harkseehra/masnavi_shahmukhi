@@ -26,6 +26,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Remove server-only code (API routes, admin workbench, middleware)
+        run: rm -rf app/api app/admin middleware.ts
+
       - run: npm run build:reader
         env:
           BUILD_TARGET: reader
