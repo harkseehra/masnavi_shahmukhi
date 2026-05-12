@@ -4,11 +4,11 @@
     "daftar": 4,
     "couplet_number": 1,
     "farsi": "اى ضياء الحق حسام الدين توى / ‏كه گذشت از مه به نورت مثنوى",
-    "punjabi_draft": "",
-    "punjabi_final": "",
-    "edit_count": 0,
-    "status": "untranslated",
-    "approved_at": null,
+    "punjabi_draft": "اے ضیاءالحق حسام الدین، توں ایں / کہ مثنوی تیرے نور نال ماہ توں لنگھ گئی",
+    "punjabi_final": "اے ضیاءالحق حسام الدین، توں ایں / کہ مثنوی تیرے نور نال ماہ توں لنگھ گئی",
+    "edit_count": 1,
+    "status": "approved",
+    "approved_at": "2026-05-12T01:02:12.725144Z",
     "batch_id": null
   },
   {
@@ -16,11 +16,11 @@
     "daftar": 4,
     "couplet_number": 2,
     "farsi": "همت عالى تو اى مرتجا / مى‏كشد اين را خدا داند كجا",
-    "punjabi_draft": "",
-    "punjabi_final": "",
-    "edit_count": 0,
-    "status": "untranslated",
-    "approved_at": null,
+    "punjabi_draft": "تیری اعلیٰ ہمت، اے مرتجیٰ / ایہنوں کھچدی اے، خدا جانے کتھے",
+    "punjabi_final": "تیری اعلیٰ ہمت، اے مرتجیٰ / ایہنوں کھچدی اے، خدا جانے کتھے",
+    "edit_count": 1,
+    "status": "approved",
+    "approved_at": "2026-05-12T01:02:12.725144Z",
     "batch_id": null
   },
   {

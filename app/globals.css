@@ -27,6 +27,30 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'ArabicTransparent';
+  src: url('/fonts/Arabic-Transparent.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RozNastaleeq';
+  src: url('/fonts/RozUrduPunjabiNastaleeq.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NastaliqLike';
+  src: url('/fonts/NastaliqLike-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ── 1. Tokens ───────────────────────────────────────────────── */
 
 :root {
@@ -57,7 +81,12 @@
   --font-fa-arial:    Arial, sans-serif;
   --font-fa-nazanin:  'BNazanin', serif;
   --font-fa-nastaliq: 'NooriNastaliq', serif;
-  --font-fa:         var(--font-fa-vazir);
+  --font-fa-arabic:   'ArabicTransparent', serif;
+  --font-fa:          var(--font-fa-nastaliq);
+
+  --font-pa-nastaleeq: 'RozNastaleeq', serif;
+  --font-pa-naskh:     'NastaliqLike', serif;
+  --font-pa:           var(--font-pa-nastaleeq);
 
   --font-en-sans:  'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-en-serif: 'Amiri', Georgia, serif;
@@ -89,8 +118,13 @@
 [data-font="arial"]    { --font-fa: var(--font-fa-arial); }
 [data-font="nazanin"]  { --font-fa: var(--font-fa-nazanin); }
 [data-font="nastaliq"] { --font-fa: var(--font-fa-nastaliq); }
-[data-font="nastaliq"] [lang="fa"] { word-spacing: 0.28em; }
+[data-font="arabic"]   { --font-fa: var(--font-fa-arabic); }
+[data-font="nastaliq"] [lang="fa"],
+[data-font="arabic"]   [lang="fa"] { word-spacing: 0.28em; }
 [data-en-font="serif"] { --font-en: var(--font-en-serif); }
+
+[data-pa-font="nastaleeq"] { --font-pa: var(--font-pa-nastaleeq); }
+[data-pa-font="naskh"]     { --font-pa: var(--font-pa-naskh); }
 
 /* Arial: heavier weight to compensate for its thinner stroke design */
 [data-font="arial"] .verse-fa,
@@ -1655,14 +1689,14 @@ mark { background: rgba(var(--c-accent-rgb), 0.13); color: var(--c-accent); bord
 
 /* Scholar grid: Farsi right, Shahmukhi left */
 .scholar-cell--shahmukhi {
-  font-family: var(--font-fa);
+  font-family: var(--font-pa);
   font-size: var(--fz-fa);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--lh-fa);
   color: var(--c-text-en);
   direction: rtl;
   text-align: right;
-  transition: color var(--dur-mid) var(--ease-out);
+  transition: color var(--dur-mid) var(--ease-out), font-family var(--dur-fast) var(--ease-out);
 }
 
 /* Script toggle button label */

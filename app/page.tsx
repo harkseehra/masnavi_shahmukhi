@@ -9,8 +9,9 @@ const SIZE_STEPS = 6;
 const SIZE_FA = [20, 22, 24, 26, 28, 32];
 const LH_FA   = [2.05, 2.10, 2.15, 2.15, 2.20, 2.25];
 
-type Theme = 'light' | 'dark' | 'kaghaz';
-type Font  = 'vazir' | 'nazanin' | 'nastaliq';
+type Theme  = 'light' | 'dark' | 'kaghaz';
+type Font   = 'nastaliq' | 'arabic' | 'nazanin';
+type PaFont = 'nastaleeq' | 'naskh';
 
 function applyTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme;
@@ -20,11 +21,14 @@ function applyFont(font: Font) {
   document.documentElement.dataset.font = font;
   localStorage.setItem('ms-font', font);
 }
+function applyPaFont(font: PaFont) {
+  document.documentElement.dataset.paFont = font;
+  localStorage.setItem('ms-pa-font', font);
+}
 function applySize(step: number) {
   const r = document.documentElement.style;
   r.setProperty('--fz-fa', SIZE_FA[step] + 'px');
   r.setProperty('--lh-fa', String(LH_FA[step]));
-  r.setProperty('--fz-en', String(Math.round(SIZE_FA[step] * 0.75)) + 'px');
   localStorage.setItem('ms-size', String(step));
 }
 
@@ -32,7 +36,8 @@ export default function Reader() {
   const [couplets, setCouplets]     = useState<Couplet[]>([]);
   const [page, setPage]             = useState(0);
   const [theme, setTheme]           = useState<Theme>('light');
-  const [font, setFont]             = useState<Font>('vazir');
+  const [font, setFont]             = useState<Font>('nastaliq');
+  const [paFont, setPaFont]         = useState<PaFont>('nastaleeq');
   const [sizeStep, setSizeStep]     = useState(2);
   const [settingsOpen, setSettings] = useState(false);
   const [dir, setDir]               = useState<'next' | 'prev' | null>(null);
@@ -49,13 +54,20 @@ export default function Reader() {
         setCouplets(approved);
       });
 
-    const t = localStorage.getItem('ms-theme') as Theme | null;
-    const f = localStorage.getItem('ms-font')  as Font  | null;
-    const s = localStorage.getItem('ms-size');
-    if (t) { setTheme(t); document.documentElement.dataset.theme = t; }
-    if (f) { setFont(f);  document.documentElement.dataset.font  = f; }
-    if (s) { const n = parseInt(s); setSizeStep(n); applySize(n); }
-    else   { applySize(2); }
+    const t  = localStorage.getItem('ms-theme')   as Theme  | null;
+    const f  = localStorage.getItem('ms-font')    as Font   | null;
+    const pf = localStorage.getItem('ms-pa-font') as PaFont | null;
+    const s  = localStorage.getItem('ms-size');
+    const pg = localStorage.getItem('ms-page');
+
+    if (t)  { setTheme(t);   document.documentElement.dataset.theme  = t; }
+    if (f)  { setFont(f);    document.documentElement.dataset.font   = f; }
+    else    { document.documentElement.dataset.font = 'nastaliq'; }
+    if (pf) { setPaFont(pf); document.documentElement.dataset.paFont = pf; }
+    else    { document.documentElement.dataset.paFont = 'nastaleeq'; }
+    if (s)  { const n = parseInt(s); setSizeStep(n); applySize(n); }
+    else    { applySize(2); }
+    if (pg) { setPage(parseInt(pg)); }
   }, []);
 
   const goTo = useCallback((target: number, d: 'next' | 'prev' | null) => {
@@ -66,9 +78,10 @@ export default function Reader() {
     localStorage.setItem('ms-page', String(target));
   }, [totalPages]);
 
-  const onTheme = (t: Theme) => { setTheme(t); applyTheme(t); };
-  const onFont  = (f: Font)  => { setFont(f);  applyFont(f);  };
-  const onSize  = (delta: number) => {
+  const onTheme  = (t: Theme)  => { setTheme(t);   applyTheme(t); };
+  const onFont   = (f: Font)   => { setFont(f);    applyFont(f); };
+  const onPaFont = (f: PaFont) => { setPaFont(f);  applyPaFont(f); };
+  const onSize   = (delta: number) => {
     const next = Math.min(SIZE_STEPS - 1, Math.max(0, sizeStep + delta));
     setSizeStep(next);
     applySize(next);
@@ -143,13 +156,21 @@ export default function Reader() {
           <div className="settings-divider" />
 
           <div className="settings-section">
-            <p className="settings-label">Script</p>
+            <p className="settings-label">Farsi Script</p>
             <div className="settings-row">
-              {(['vazir', 'nazanin', 'nastaliq'] as Font[]).map(f => (
-                <button key={f} className={`settings-opt${font === f ? ' active' : ''}`} onClick={() => onFont(f)}>
-                  {f === 'vazir' ? 'Naskh' : f === 'nazanin' ? 'Nazanin' : 'Nastaliq'}
-                </button>
-              ))}
+              <button className={`settings-opt${font === 'nastaliq' ? ' active' : ''}`} onClick={() => onFont('nastaliq')}>Nastaleeq</button>
+              <button className={`settings-opt${font === 'arabic'   ? ' active' : ''}`} onClick={() => onFont('arabic')}>Naskh</button>
+              <button className={`settings-opt${font === 'nazanin'  ? ' active' : ''}`} onClick={() => onFont('nazanin')}>Nazanin</button>
+            </div>
+          </div>
+
+          <div className="settings-divider" />
+
+          <div className="settings-section">
+            <p className="settings-label">Punjabi Script</p>
+            <div className="settings-row">
+              <button className={`settings-opt${paFont === 'nastaleeq' ? ' active' : ''}`} onClick={() => onPaFont('nastaleeq')}>Nastaleeq</button>
+              <button className={`settings-opt${paFont === 'naskh'     ? ' active' : ''}`} onClick={() => onPaFont('naskh')}>Naskh</button>
             </div>
           </div>
 
