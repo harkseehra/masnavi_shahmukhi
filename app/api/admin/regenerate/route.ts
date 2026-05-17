@@ -9,9 +9,9 @@ export async function POST(req: Request) {
   const before  = draftWithEdits as string;
   const newText = await regenerateCouplet(farsi, draftWithEdits, romanInput ?? '');
 
-  const all     = readCouplets();
+  const all     = await readCouplets();
   const current = all.find(c => c.id === id);
-  const updated = updateCouplet(id, {
+  const updated = await updateCouplet(id, {
     punjabi_final: newText,
     edit_count: (current?.edit_count ?? 0) + 1,
   });

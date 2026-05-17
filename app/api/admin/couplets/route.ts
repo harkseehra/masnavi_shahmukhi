@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const offset = parseInt(searchParams.get('offset') ?? '0');
   const size   = parseInt(searchParams.get('size')   ?? '25');
 
-  const all   = readCouplets();
+  const all   = await readCouplets();
   const slice = all.slice(offset, offset + size);
 
   return NextResponse.json({ couplets: slice, total: all.length, offset, size });

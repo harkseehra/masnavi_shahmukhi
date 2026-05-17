@@ -1,28 +1,33 @@
 import { NextResponse } from 'next/server';
-import { readCouplets, updateCouplet } from '@/lib/data';
+import { readCouplets, batchUpdateCouplets } from '@/lib/data';
 import { draftCouplet } from '@/lib/claude';
 import { log } from '@/lib/logger';
 
 export async function POST(req: Request) {
   const { ids } = (await req.json()) as { ids: string[] };
 
-  const all      = readCouplets();
+  const all      = await readCouplets();
   const approved = all.filter(c => c.status === 'approved');
-  const results  = [];
 
-  for (const id of ids) {
-    const c = all.find(x => x.id === id);
-    if (!c || c.status !== 'untranslated') continue;
+  // Draft all couplets in parallel, then write to GitHub in one commit
+  const pending = ids
+    .map(id => all.find(x => x.id === id))
+    .filter((c): c is NonNullable<typeof c> => !!c && c.status === 'untranslated');
 
-    try {
-      const draft   = await draftCouplet(c.farsi, approved.slice(-3));
-      const updated = updateCouplet(id, { status: 'draft', punjabi_draft: draft, punjabi_final: draft });
-      log({ couplet_id: id, action: 'draft_generated', before: null, after: draft });
-      results.push(updated);
-    } catch (err) {
-      console.error(`Draft failed for ${id}:`, err);
-    }
-  }
+  const drafts = await Promise.allSettled(
+    pending.map(c => draftCouplet(c.farsi, approved.slice(-3)))
+  );
+
+  const updates = pending
+    .map((c, i) => {
+      const r = drafts[i];
+      if (r.status === 'rejected') { console.error(`Draft failed for ${c.id}:`, r.reason); return null; }
+      return { id: c.id, changes: { status: 'draft' as const, punjabi_draft: r.value, punjabi_final: r.value } };
+    })
+    .filter((u): u is NonNullable<typeof u> => u !== null);
+
+  const results = await batchUpdateCouplets(updates);
+  results.forEach((c, i) => log({ couplet_id: c.id, action: 'draft_generated', before: null, after: updates[i].changes.punjabi_final! }));
 
   return NextResponse.json(results);
 }
